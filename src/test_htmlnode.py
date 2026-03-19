@@ -1,6 +1,7 @@
 import unittest
 
-from htmlnode import HTMLNode
+from leafnode import LeafNode
+from htmlnode import HTMLNode 
 
 class TestHTMLNode(unittest.TestCase):
     def test_to_html_props(self):
@@ -48,6 +49,19 @@ class TestHTMLNode(unittest.TestCase):
             node.__repr__(),
             "HTMLNode(p, What a strange world, children: None, {'class': 'primary'})",
         )
+
+    def test_leaf_to_html(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+
+    def test_leaf_to_html_with_attr(self):
+        node = LeafNode("a", "Click me!", {"href": "https://www.boot.dev"})
+        self.assertEqual(node.to_html(), '<a href="https://www.boot.dev">Click me!</a>')
+
+    def test_leaf_to_html_with_attr2(self):
+        node = LeafNode("a", "Open a tab!", {"href": "https://www.boot.dev", "target": "_blank"})
+        self.assertEqual(node.to_html(), '<a href="https://www.boot.dev" target="_blank">Open a tab!</a>')
+
 
 if __name__ == "__main__":
     unittest.main()
