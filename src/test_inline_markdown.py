@@ -148,6 +148,67 @@ class TestInlineMarkdown(unittest.TestCase):
     def test_split_text_no_img(self):
         node = [TextNode("This is just text without any images.", TextType.TEXT)]
         self.assertListEqual([TextNode("This is just text without any images.", TextType.TEXT)], split_nodes_image(node))
+        self.assertListEqual([TextNode("This is just text without any images.", TextType.TEXT)], split_nodes_link(node))
+
+    def test_split_text_beginning_with_link(self):
+        node = [TextNode("[This link](https://www.boot.dev) leads to boot.dev.", TextType.LINK, "https://www.boot.dev")]
+        self.assertListEqual(
+            [
+                TextNode("This link", TextType.LINK, "https://www.boot.dev"),
+                TextNode(" leads to boot.dev.", TextType.TEXT)
+            ]
+            , split_nodes_link(node))
+
+    def test_split_text_beginning_with_image(self):
+        node = [TextNode("![Image of Boots](https://www.boot.dev)This is Boots the bear", TextType.IMAGE, "https://www.boot.dev")]
+        self.assertListEqual(
+            [
+                TextNode("Image of Boots", TextType.IMAGE, "https://www.boot.dev"),
+                TextNode("This is Boots the bear", TextType.TEXT)
+            ]
+            , split_nodes_image(node))
+
+    def test_split_text_ending_with_link(self):
+        node = [TextNode("This link leads to [boot.dev](https://www.boot.dev)", TextType.LINK, "https://www.boot.dev")]
+        self.assertListEqual(
+            [
+                TextNode("This link leads to ", TextType.TEXT),
+                TextNode("boot.dev", TextType.LINK, "https://www.boot.dev")
+            ]
+            , split_nodes_link(node))
+
+    def test_split_text_ending_with_image(self):
+        node = [TextNode("This is Boots the bear ![Image of Boots](https://www.boot.dev)", TextType.IMAGE, "https://www.boot.dev")]
+        self.assertListEqual(
+            [
+                TextNode("This is Boots the bear ", TextType.TEXT),
+                TextNode("Image of Boots", TextType.IMAGE, "https://www.boot.dev")
+            ]
+            , split_nodes_image(node))
+
+    def test_split_text_multiple_links(self):
+        node = [TextNode("This link leads to [boot.dev](https://www.boot.dev) and that link to [duckduckgo](https://www.duckduckgo.com).", TextType.LINK, "https://www.boot.dev")]
+        self.assertListEqual(
+            [
+                TextNode("This link leads to ", TextType.TEXT),
+                TextNode("boot.dev", TextType.LINK, "https://www.boot.dev"),
+                TextNode(" and that link to ", TextType.TEXT),
+                TextNode("duckduckgo", TextType.LINK, "https://www.duckduckgo.com"),
+                TextNode(".", TextType.TEXT),
+            ]
+            , split_nodes_link(node))
+
+    def test_split_text_multiple_images(self):
+        node = [TextNode("This image is of ![Boots](https://www.boot.dev) and that one is of ![duck](https://www.duckduckgo.com).", TextType.LINK, "https://www.boot.dev")]
+        self.assertListEqual(
+            [
+                TextNode("This image is of ", TextType.TEXT),
+                TextNode("Boots", TextType.IMAGE, "https://www.boot.dev"),
+                TextNode(" and that one is of ", TextType.TEXT),
+                TextNode("duck", TextType.IMAGE, "https://www.duckduckgo.com"),
+                TextNode(".", TextType.TEXT),
+            ]
+            , split_nodes_image(node))
 
 if __name__ == "__main__":
     unittest.main()
