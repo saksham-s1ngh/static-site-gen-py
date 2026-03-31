@@ -11,13 +11,13 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         if len(split_nodes) % 2 == 0:
             raise Exception("Closing delimiter not found")
         
-        for index, splits in enumerate(split_nodes):
-            if splits == "":
+        for index, split_node in enumerate(split_nodes):
+            if split_node == "":
                 continue
             if index % 2 == 0:
-                new_nodes.append(TextNode(splits, TextType.TEXT))
+                new_nodes.append(TextNode(split_node, TextType.TEXT))
             else:
-                new_nodes.append(TextNode(splits, text_type))
+                new_nodes.append(TextNode(split_node, text_type))
     return new_nodes
 
 def split_nodes_image(old_nodes):
@@ -77,3 +77,13 @@ def extract_markdown_images(text):
 def extract_markdown_links(text):
     markdown_text_and_url = re.findall(r"\[(.*?)\]\(([^)\s]+)\)", text)
     return markdown_text_and_url
+
+def text_to_textnodes(text):
+    text_nodes = [TextNode(text, TextType.TEXT)]
+    text_nodes = split_nodes_delimiter(text_nodes, "**", TextType.BOLD)
+    text_nodes = split_nodes_delimiter(text_nodes, "_", TextType.ITALIC)
+    text_nodes = split_nodes_delimiter(text_nodes, "`", TextType.CODE)
+    text_nodes = split_nodes_image(text_nodes)
+    text_nodes = split_nodes_link(text_nodes)
+    return text_nodes
+
