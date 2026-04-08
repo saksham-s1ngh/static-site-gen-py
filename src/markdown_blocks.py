@@ -5,8 +5,8 @@ class BlockType(Enum):
     HEADING = "heading"
     CODE = "code"
     QUOTE = "quote"
-    UNORDERED_LIST = "unordered_list"
-    ORDERED_LIST = "ordered_list"
+    ULIST = "unordered_list"
+    OLIST = "ordered_list"
 
 def markdown_to_blocks(markdown):
     block_strings = markdown.split("\n\n")
@@ -21,23 +21,22 @@ def block_to_block_type(markdown_block):
 
     if markdown_block.startswith(("###### ","##### ","#### ","### ","## ","# ")):
         return BlockType.HEADING
-    elif markdown_block.startswith("```\n") and markdown_block.endswith("\n```"):
+    if markdown_block.startswith("```\n") and markdown_block.endswith("\n```") and len(lines) > 1:
         return BlockType.CODE
-    elif markdown_block.startswith(">"):
+    if markdown_block.startswith(">"):
         for line in lines:
             if not line.startswith(">"):
                 return BlockType.PARAGRAPH
         return BlockType.QUOTE
-    elif markdown_block.startswith("- "):
+    if markdown_block.startswith("- "):
         for line in lines:
             if not line.startswith("- "):
                 return BlockType.PARAGRAPH
-        return BlockType.UNORDERED_LIST
-    elif markdown_block.startswith("1. "):
+        return BlockType.ULIST
+    if markdown_block.startswith("1. "):
         for i, line in enumerate(lines):
             if not line.startswith(f"{i + 1}. "):
                 return BlockType.PARAGRAPH
-        return BlockType.ORDERED_LIST
-    else :
-        return BlockType.PARAGRAPH
+        return BlockType.OLIST
+    return BlockType.PARAGRAPH
 
