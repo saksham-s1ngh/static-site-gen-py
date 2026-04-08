@@ -1,5 +1,9 @@
 import unittest
-from markdown_blocks import markdown_to_blocks
+from markdown_blocks import ( 
+    BlockType,
+    markdown_to_blocks, 
+    block_to_block_type,
+)
 
 class TestMarkdownToHTML(unittest.TestCase):
     def test_markdown_to_blocks(self):
@@ -36,6 +40,12 @@ Unknown text with multiple \n \n newline characters in between."""
                     "Another random `code` line\nUnknown text with multiple \n \n newline characters in between."
                 ]
             )
+
+    def test_block_to_blocktype_headings(self):
+        md = """# This is a heading
+"""
+        block_type = block_to_block_type(md)
+        self.assertEqual(block_type, BlockType.HEADING)
 
 if __name__ == "__main__":
     unittest.main()
