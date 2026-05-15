@@ -1,5 +1,7 @@
 import re
+
 from textnode import TextNode, TextType
+
 
 def text_to_textnodes(text):
     text_nodes = [TextNode(text, TextType.TEXT)]
@@ -9,7 +11,6 @@ def text_to_textnodes(text):
     text_nodes = split_nodes_image(text_nodes)
     text_nodes = split_nodes_link(text_nodes)
     return text_nodes
-
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
