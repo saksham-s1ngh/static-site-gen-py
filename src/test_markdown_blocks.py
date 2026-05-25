@@ -1,11 +1,13 @@
 import unittest
-from types import MemberDescriptorType
 
 from markdown_blocks import (
     BlockType,
     block_to_block_type,
+    heading_to_html_node,
     markdown_to_blocks,
     markdown_to_html_node,
+    olist_to_html_node,
+    paragraph_to_html_node,
 )
 
 
@@ -86,6 +88,34 @@ the **same** even with inline stuff
         self.assertEqual(
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
+    def test_heading_h2(self):
+        node = heading_to_html_node("## Hello **world**")
+        self.assertEqual(node.to_html(), "<h2>Hello <b>world</b></h2>")
+
+    def test_ordered_list(self):
+        md = """1. Item 1\n2. Item 2\n3. Item 3"""
+        node = olist_to_html_node(md)
+        self.assertEqual(
+            node.to_html(),
+            "<ol><li>Item 1</li><li>Item 2</li><li>Item 3</li></ol>",
+        )
+
+    def test_blockquote(self):
+        md = """
+> This is a 
+> blockquote block
+
+this is a paragraph text
+
+
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a blockquote block</blockquote><p>this is a paragraph text</p></div>",
         )
 
 
