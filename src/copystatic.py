@@ -14,7 +14,7 @@ def recursive_copy(source: str, dest: str) -> None:
             shutil.copy(item_path, dest)
         else:  # if item is a directory
             # if the item is a dir, it will have to be a dir within public
-            # so we the correct destination path which is : dest + sub_dir_name
+            # so we take the correct destination path which is : dest + sub_dir_name
             dest_path = os.path.join(dest, item)
             if not os.path.exists(dest_path):
                 os.mkdir(dest_path)

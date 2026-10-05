@@ -2,8 +2,7 @@ import os
 import shutil
 
 from copystatic import recursive_copy
-from generate_page import generate_page
-from textnode import TextNode, TextType
+from generate_page import generate_recursive
 
 dir_path_public = "./public"
 dir_path_static = "./static"
@@ -19,12 +18,9 @@ def main():
     print("Copying static files to public...")
     recursive_copy(dir_path_static, dir_path_public)
 
-    dir_path_source_markdown = "./content/index.md"
-    dir_path_template = "./template.html"
-    dir_path_destination_html = "./public/index.html"
-    generate_page(
-        dir_path_source_markdown, dir_path_template, dir_path_destination_html
-    )
+    dir_path_content = "./content/"
+    template_path = "./template.html"
+    generate_recursive(dir_path_content, template_path, dir_path_public)
 
 
 main()
